@@ -1,7 +1,8 @@
 language: scala
 scala:
   - 2.11.12
-  - 2.12.8
+  #- 2.12.8
+  # holdens library not yef for 2.12
 sudo: required
 dist: trusty
 group: edge
