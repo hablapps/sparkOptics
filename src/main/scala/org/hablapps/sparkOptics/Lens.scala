@@ -11,7 +11,7 @@ object Lens {
 
   trait LensSyntax {
     implicit class ProtoLensSyntax(p1: ProtoLens) {
-      def combineProtoLens(p2: ProtoLens): ProtoLens = schema => {
+      def composeProtoLens(p2: ProtoLens): ProtoLens = schema => {
         p1(schema) composeProtoLens p2
       }
     }

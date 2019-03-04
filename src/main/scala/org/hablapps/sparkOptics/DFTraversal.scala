@@ -21,10 +21,14 @@ object DFTraversal {
           throw new Exception("a dataframe with only one column was expected, because you'r not applying any extra optics")
         }
       }
+
+      override def get: DataFrame => DataFrame = x => x
     }
   }
 
-  object implicits {
+  object syntax extends DFTraversalSyntax
+
+  trait DFTraversalSyntax {
 
     implicit class ProtoDFTraversalSyntax(proto: ProtoDFTraversal) {
       def composeLens(lens: Lens): DFTraversal = {
@@ -39,15 +43,15 @@ object DFTraversal {
         proto(df.schema)
       }
     }
-
   }
-
 }
 
 abstract sealed class DFTraversal() {
   def structure: StructType
 
   def set(newValue: Column): DataFrame => DataFrame
+
+  def get: DataFrame => DataFrame
 
   def opticsToApply: Option[Lens]
 
@@ -61,6 +65,8 @@ abstract sealed class DFTraversal() {
 
       override def opticsToApply: Option[Lens] =
         Some(traversalParent.opticsToApply.fold(lens)(_ composeLens lens))
+
+      override def get: DataFrame => DataFrame = _.select(opticsToApply.get.get)
     }
   }
 
@@ -74,6 +80,8 @@ abstract sealed class DFTraversal() {
 
       override def opticsToApply: Option[Lens] =
         Some(traversalParent.opticsToApply.fold(protoLens(traversalParent.structure))(_ composeProtoLens protoLens))
+
+      override def get: DataFrame => DataFrame = _.select(opticsToApply.get.get)
     }
   }
 
