@@ -2,7 +2,7 @@ language: scala
 scala:
   - 2.11.12
   #- 2.12.8
-  # holdens library not yet for 2.12
+  # holden's library not yet for 2.12
 sudo: required
 dist: trusty
 group: edge

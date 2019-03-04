@@ -7,11 +7,11 @@ import org.scalatest.{Matchers, Suite}
 
 trait LensLaws extends DataFrameSuiteBase with Matchers {
   self: Suite =>
-  def getSet(l: Lens, s: DataFrame): Unit = {
+  def assertGetSet(l: Lens, s: DataFrame): Unit = {
     assertDataFrameEquals(s, s.select(l.set(l.get): _*))
   }
 
-  def setGet[A](l: Lens, s: DataFrame, a: A): Unit = {
+  def assertSetGet(l: Lens, s: DataFrame, a: Any): Unit = {
     import s.sparkSession.implicits._
     s.select(l.set(lit(a)): _*)
       .groupBy(l.get)

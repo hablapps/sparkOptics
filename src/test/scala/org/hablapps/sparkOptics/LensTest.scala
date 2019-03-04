@@ -23,10 +23,10 @@ class LensTest
     val strLens: Lens = Lens("colstr1")(df.schema)
     val numLens: Lens = Lens("colnum")(df.schema)
 
-    getSet(strLens, df)
-    setGet(strLens, df, "aaa")
-    getSet(numLens, df)
-    setGet(numLens, df, 12)
+    assertGetSet(strLens, df)
+    assertSetGet(strLens, df, "aaa")
+    assertGetSet(numLens, df)
+    assertSetGet(numLens, df, 12)
 
   }
 
@@ -50,23 +50,21 @@ class LensTest
     }
 
     List(
-      Lens("colstr1") _,
-      Lens("level.colstr1") _,
-      Lens("level.level.colstr1") _
-    ).foreach(proto => {
-      val lens = proto(leveleddf.schema)
-      getSet(lens, leveleddf)
-      setGet(lens, leveleddf, "aaa")
+      Lens("colstr1")(leveleddf.schema),
+      Lens("level.colstr1")(leveleddf.schema),
+      Lens("level.level.colstr1")(leveleddf.schema)
+    ).foreach(lens => {
+      assertGetSet(lens, leveleddf)
+      assertSetGet(lens, leveleddf, "aaa")
     })
 
     List(
-      Lens("colnum") _,
-      Lens("level.colnum") _,
-      Lens("level.level.colnum") _
-    ).foreach(proto => {
-      val lens = proto(leveleddf.schema)
-      getSet(lens, leveleddf)
-      setGet(lens, leveleddf, 12)
+      Lens("colnum")(leveleddf.schema),
+      Lens("level.colnum")(leveleddf.schema),
+      Lens("level.level.colnum")(leveleddf.schema)
+    ).foreach(lens => {
+      assertGetSet(lens, leveleddf)
+      assertSetGet(lens, leveleddf, 12)
     })
   }
 
