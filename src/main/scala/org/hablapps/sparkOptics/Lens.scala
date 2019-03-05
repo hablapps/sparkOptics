@@ -44,17 +44,16 @@ object Lens {
 
   private def createSingle(c: String)(s: StructType): Lens = {
 
-    assert(s.fields.map(_.name).indexOf(c) >= 0)
+    assert(s.fields.map(_.name).indexOf(c) >= 0, s"the column $c not found in ${s.fields.map(_.name).mkString("[", ",", "]")}")
     new Lens() {
       override def column: Vector[String] = Vector(c)
       override def structure: StructType = s
 
       def setAux(newValue: Column, prev: Vector[String]): Array[Column] = {
         s.fields
-          .map(_.name)
           .map(co =>
-            if (co != c) {
-              col((prev :+ co).mkString("."))
+            if (co.name != c) {
+              col((prev :+ co.name).mkString("."))
             } else {
               newValue.as(c)
           })
@@ -80,8 +79,8 @@ sealed abstract class Lens private () {
       override def setAux(newValue: Column,
                           prev: Vector[String]): Array[Column] = {
         val newCol =
-          struct(nextLens.setAux(newValue, first.column): _*).as(column.last)
-        first.setAux(newCol, first.column)
+          struct(nextLens.setAux(newValue, prev ++ first.column): _*).as(nextLens.column.last)
+        first.setAux(newCol, prev)
       }
 
       override def structure: StructType = first.structure

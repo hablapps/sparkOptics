@@ -1,4 +1,4 @@
-name := "spark-lenses"
+name := "spark-optics"
 
 version := "0.1"
 
