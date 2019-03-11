@@ -62,6 +62,21 @@ object Lens {
               newValue.as(c)
           })
       }
+
+      override def renameWithPrefix(newName: String,
+                                    prev: Vector[String]): Array[Column] =
+        s.fields
+          .map(co =>
+            if (co.name != c) {
+              col((prev :+ co.name).mkString(".")).as(co.name)
+            } else {
+              col((prev :+ co.name).mkString(".")).as(newName)
+            })
+
+      override def prune(prev: Vector[String]): Array[Column] =
+        s.fields
+          .filter(_.name != c)
+          .map(co => col((prev :+ co.name).mkString(".")).as(co.name))
     }
   }
 }
@@ -89,6 +104,21 @@ sealed abstract class Lens private () {
       }
 
       override def structure: StructType = first.structure
+
+      override def renameWithPrefix(newName: String,
+                                    prev: Vector[String]): Array[Column] = {
+        val newCol =
+          struct(nextLens.renameWithPrefix(newName, prev ++ first.column): _*)
+            .as(nextLens.column.last)
+        first.setAux(newCol, prev)
+      }
+
+      override def prune(prev: Vector[String]): Array[Column] = {
+        val newCol =
+          struct(nextLens.prune(prev ++ first.column): _*)
+            .as(nextLens.column.last)
+        first.setAux(newCol, prev)
+      }
     }
   }
 
@@ -107,4 +137,11 @@ sealed abstract class Lens private () {
 
   def set(c: Column): Array[Column] =
     setAux(c, Vector.empty)
+
+  def rename(newName: String): Array[Column] =
+    renameWithPrefix(newName, Vector.empty)
+
+  def renameWithPrefix(newName: String, prev: Vector[String]): Array[Column]
+
+  def prune(prev: Vector[String] = Vector.empty): Array[Column]
 }

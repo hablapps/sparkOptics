@@ -30,15 +30,15 @@ class LensTest
 
   }
 
-  it should "modify a n level column" in {
-    val increaseLevel: DataFrame => DataFrame = df => {
-      val newColumn = struct(df.schema.fields.map(f => col(f.name)): _*)
-      df.withColumn("level", newColumn)
-    }
+  val increaseLevel: DataFrame => DataFrame = df => {
+    val newColumn = struct(df.schema.fields.map(f => col(f.name)): _*)
+    df.withColumn("level", newColumn)
+  }
 
-    def increaseNLevels(n: Int): DataFrame => DataFrame = {
-      (1 to n).map(_ => increaseLevel).reduce(_ andThen _)
-    }
+  def increaseNLevels(n: Int): DataFrame => DataFrame = {
+    (1 to n).map(_ => increaseLevel).reduce(_ andThen _)
+  }
+  it should "modify a n level column" in {
 
     val leveleddf = {
       val df = List(("str", 54, "str2"),
@@ -66,6 +66,25 @@ class LensTest
       assertGetSet(lens, leveleddf)
       assertSetGet(lens, leveleddf, 12)
     })
+  }
+
+  it should "change the name of the focused subcolumn" in {
+    val leveleddf = {
+      val df = List(("str", 54, "str2"),
+        ("str", 54, "str2"),
+        ("str", 54, "str2")).toDF("colstr1", "colnum", "colstr2")
+
+      val n = 2
+      increaseNLevels(n)(df)
+
+    }
+    val lensOrig = Lens("level.level.colstr1")(leveleddf.schema)
+    val changed = leveleddf.select(lensOrig.rename("otherName"): _*)
+    val changedLens = Lens("level.level.otherName")(changed.schema)
+    changed.select(changedLens.get)
+      .as[String].collect() shouldBe leveleddf.select(lensOrig.get).as[String].collect
+    changed.select(changedLens.prune(): _*).schema shouldBe leveleddf.select(lensOrig.prune(): _*).schema
+    changed.select(changedLens.prune(): _*).schema
   }
 
 }
