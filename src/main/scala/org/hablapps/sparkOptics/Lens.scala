@@ -7,7 +7,9 @@ import org.hablapps.sparkOptics.Lens.ProtoLens
 
 object Lens {
 
-  object syntax {
+  object syntax extends LensSyntax
+
+  trait LensSyntax {
     implicit class ProtoLensSyntax(p1: ProtoLens) {
       def combineProtoLens(p2: ProtoLens): ProtoLens = schema => {
         p1(schema) composeProtoLens p2
@@ -44,7 +46,9 @@ object Lens {
 
   private def createSingle(c: String)(s: StructType): Lens = {
 
-    assert(s.fields.map(_.name).indexOf(c) >= 0, s"the column $c not found in ${s.fields.map(_.name).mkString("[", ",", "]")}")
+    assert(
+      s.fields.map(_.name).indexOf(c) >= 0,
+      s"the column $c not found in ${s.fields.map(_.name).mkString("[", ",", "]")}")
     new Lens() {
       override def column: Vector[String] = Vector(c)
       override def structure: StructType = s
@@ -79,7 +83,8 @@ sealed abstract class Lens private () {
       override def setAux(newValue: Column,
                           prev: Vector[String]): Array[Column] = {
         val newCol =
-          struct(nextLens.setAux(newValue, prev ++ first.column): _*).as(nextLens.column.last)
+          struct(nextLens.setAux(newValue, prev ++ first.column): _*)
+            .as(nextLens.column.last)
         first.setAux(newCol, prev)
       }
 

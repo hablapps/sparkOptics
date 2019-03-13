@@ -7,6 +7,10 @@ sudo: required
 dist: trusty
 group: edge
 
+script:
+  - sbt ++$TRAVIS_SCALA_VERSION scalafmtCheck
+  - sbt ++$TRAVIS_SCALA_VERSION test
+
 cache:
   directories:
     - $HOME/.ivy2/cache
