@@ -101,7 +101,7 @@ object Lens {
               col((prev :+ co.name).mkString(".")).as(co.name)
             } else {
               col((prev :+ co.name).mkString(".")).as(newName)
-            })
+          })
 
       /**
         * Removes the focused column
