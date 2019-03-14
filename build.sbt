@@ -2,7 +2,7 @@ name := "spark-optics"
 
 scalaVersion := "2.11.12"
 
-crossScalaVersions := Seq("2.11.12", "2.12.8")
+crossScalaVersions := Seq("2.11.12")//, "2.12.8")
 
 parallelExecution in Test := false
 fork in Test := true
