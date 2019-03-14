@@ -11,7 +11,7 @@ before_install:
   - git fetch --tags
 
 stages:
-  - name: test
+  - name: +test
   - name: release
     if: (branch = master AND type = push) OR (tag IS present)
 
