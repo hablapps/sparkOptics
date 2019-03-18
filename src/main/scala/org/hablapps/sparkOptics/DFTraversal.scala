@@ -32,7 +32,7 @@ object DFTraversal {
 
     implicit class ProtoDFTraversalSyntax(proto: ProtoDFTraversal) {
       def composeLens(lens: Lens): DFTraversal = {
-        proto(lens.structure) composeLens lens
+        proto(lens.schema) composeLens lens
       }
 
       def composeProtoLens(protoLens: ProtoLens): ProtoDFTraversal = structure => {
