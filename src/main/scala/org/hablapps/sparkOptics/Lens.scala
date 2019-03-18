@@ -5,17 +5,21 @@ import org.apache.spark.sql.functions.{col, struct}
 import org.apache.spark.sql.types.{DataType, StructType}
 import org.hablapps.sparkOptics.Lens.ProtoLens
 
-object Lens {
+object ProtoLens {
+  def apply(column: String): ProtoLens = Lens(column)
 
-  object syntax extends LensSyntax
+  object syntax extends ProtoLensSyntax
 
-  trait LensSyntax {
+  trait ProtoLensSyntax {
     implicit class ProtoLensSyntax(p1: ProtoLens) {
       def composeProtoLens(p2: ProtoLens): ProtoLens = schema => {
         p1(schema) composeProtoLens p2
       }
     }
   }
+}
+
+object Lens {
 
   type ProtoLens = StructType => Lens
 

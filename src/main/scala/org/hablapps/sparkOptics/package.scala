@@ -1,9 +1,10 @@
 package org.hablapps
 
-import org.hablapps.sparkOptics.Lens.LensSyntax
+import org.hablapps.sparkOptics.ProtoDFTraversal.ProtoDFTraversalSyntax
+import org.hablapps.sparkOptics.ProtoLens.ProtoLensSyntax
 
 package object sparkOptics {
 
-  object syntax extends LensSyntax
+  object syntax extends ProtoLensSyntax with ProtoDFTraversalSyntax
 
 }
