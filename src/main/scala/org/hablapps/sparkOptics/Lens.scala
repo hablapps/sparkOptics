@@ -5,10 +5,7 @@ import org.apache.spark.sql.functions.{col, struct}
 import org.apache.spark.sql.types.{DataType, StructType}
 import org.hablapps.sparkOptics.ProtoLens.ProtoLens
 
-
-
 object Lens {
-
 
   /**
     * Creates a Lens that focus in the column. The column reference can be provided with dot notation,
