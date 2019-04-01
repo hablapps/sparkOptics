@@ -5,70 +5,86 @@ import org.hablapps.sparkOptics.ProtoLens.ProtoLens
 
 object GlassesFrame {
 
-  def withLens(lens: Lens): GlassesFrame[Lens] =
-    new GlassesFrame[Lens] {
-      override def set(newValue: Column): DataFrame => DataFrame = {
-        _.select(lens.set(newValue): _*)
-      }
-
-      override def get: DataFrame => Column = _ => lens.get
-
-      override def modify(f: Column => Column): DataFrame => DataFrame =
-        _.select(lens.modify(f): _*)
-
-      override val getOptic: Lens = lens
-    }
-
-  def withProtoLens(protoLens: ProtoLens): GlassesFrame[ProtoLens] =
-    new GlassesFrame[ProtoLens] {
-      override def set(newValue: Column): DataFrame => DataFrame =
-        df => df.select(protoLens(df.schema).set(newValue): _*)
-
-      override def get: DataFrame => Column = df => protoLens(df.schema).get
-
-      override def modify(f: Column => Column): DataFrame => DataFrame =
-        df => df.select(protoLens(df.schema).modify(f): _*)
-
-      override val getOptic: ProtoLens = protoLens
-    }
-
-  object syntax extends GlassesFrameSyntax
+  object syntax extends GlassesFrameSyntax with GlassesFrameInstances
 
   trait GlassesFrameSyntax {
-    implicit class GlassesProtoLensSyntax(protoLens: ProtoLens) {
-      def onGlasses: GlassesFrame[ProtoLens] =
-        withProtoLens(protoLens)
+
+    implicit class GlassesProtoLensSyntax[O](optic: O)(
+        implicit glasses: GlassesFrame[O]) {
+      def setDF(newValue: Column): DataFrame => DataFrame =
+        glasses.set(optic)(newValue)
+
+      def setDFCheckingSchema(newValue: Column): DataFrame => DataFrame =
+        glasses.setAndCheckSchema(optic)(newValue)
+
+      def getDF: DataFrame => Column =
+        glasses.get(optic)
+
+      def modifyDF(f: Column => Column): DataFrame => DataFrame =
+        glasses.modify(optic)(f)
+
+      def modifyDFCheckingSchema(f: Column => Column): DataFrame => DataFrame =
+        glasses.modifyAndCheckSchema(optic)(f)
     }
-    implicit class GlassesLensSyntax(lens: Lens) {
-      def onGlasses: GlassesFrame[Lens] =
-        withLens(lens)
-    }
+
   }
+
+  trait GlassesFrameInstances {
+    implicit val lensGlasses: GlassesFrame[Lens] =
+      new GlassesFrame[Lens] {
+        override def set(optic: Lens)(
+            newValue: Column): DataFrame => DataFrame = {
+          _.select(optic.set(newValue): _*)
+        }
+
+        override def get(optic: Lens): DataFrame => Column = _ => optic.get
+
+        override def modify(optic: Lens)(
+            f: Column => Column): DataFrame => DataFrame =
+          _.select(optic.modify(f): _*)
+      }
+
+    implicit val protoLensGlasses: GlassesFrame[ProtoLens] =
+      new GlassesFrame[ProtoLens] {
+        override def set(optic: ProtoLens)(
+            newValue: Column): DataFrame => DataFrame =
+          df => lensGlasses.set(optic(df.schema))(newValue)(df)
+
+        override def get(optic: ProtoLens): DataFrame => Column =
+          df => lensGlasses.get(optic(df.schema))(df)
+
+        override def modify(optic: ProtoLens)(
+            f: Column => Column): DataFrame => DataFrame =
+          df => lensGlasses.modify(optic(df.schema))(f)(df)
+
+      }
+  }
+
 }
 
-abstract sealed class GlassesFrame[A]() {
+trait GlassesFrame[A] {
 
-  def getOptic: A
+  def set(optic: A)(newValue: Column): DataFrame => DataFrame
 
-  def set(newValue: Column): DataFrame => DataFrame
+  def get(optic: A): DataFrame => Column
 
-  def get: DataFrame => Column
+  def modify(optic: A)(f: Column => Column): DataFrame => DataFrame
 
-  def modify(f: Column => Column): DataFrame => DataFrame
-
-  def setAndCheckSchema(newValue: Column): DataFrame => DataFrame = df => {
-    val newDf = set(newValue)(df)
-    if (df.schema == newDf.schema) {
-      newDf
-    } else {
-      throw new Exception(
-        "The returned schema is not the same as the original one")
-    }
-  }
-
-  def modifyAndCheckSchema(f: Column => Column): DataFrame => DataFrame =
+  def setAndCheckSchema(optic: A)(newValue: Column): DataFrame => DataFrame =
     df => {
-      val newDf = modify(f)(df)
+      val newDf = set(optic)(newValue)(df)
+      if (df.schema == newDf.schema) {
+        newDf
+      } else {
+        throw new Exception(
+          "The returned schema is not the same as the original one")
+      }
+    }
+
+  def modifyAndCheckSchema(optic: A)(
+      f: Column => Column): DataFrame => DataFrame =
+    df => {
+      val newDf = modify(optic)(f)(df)
       if (df.schema == newDf.schema) {
         newDf
       } else {
