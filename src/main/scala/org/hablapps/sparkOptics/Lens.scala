@@ -3,21 +3,9 @@ package org.hablapps.sparkOptics
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions.{col, struct}
 import org.apache.spark.sql.types.{DataType, StructType}
-import org.hablapps.sparkOptics.Lens.ProtoLens
+import org.hablapps.sparkOptics.ProtoLens.ProtoLens
 
 object Lens {
-
-  object syntax extends LensSyntax
-
-  trait LensSyntax {
-    implicit class ProtoLensSyntax(p1: ProtoLens) {
-      def combineProtoLens(p2: ProtoLens): ProtoLens = schema => {
-        p1(schema) composeProtoLens p2
-      }
-    }
-  }
-
-  type ProtoLens = StructType => Lens
 
   /**
     * Creates a Lens that focus in the column. The column reference can be provided with dot notation,
