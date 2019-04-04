@@ -44,7 +44,7 @@ object Lens {
 
     assert(
       s.fields.map(_.name).indexOf(c) >= 0,
-      s"the column $c not found in ${s.fields.map(_.name).mkString("[", ",", "]")}")
+      s"the column $c cannot be found in ${s.fields.map(_.name).mkString("[", ",", "]")}")
     new Lens() {
       override def column: Vector[String] = Vector(c)
 
@@ -144,7 +144,7 @@ sealed abstract class Lens private () {
   def focusDataType: DataType
 
   /**
-    * The column reference that is focusing.
+    * The column reference that is in focus.
     *
     * @return a spark [[Column]] reference.
     */
@@ -194,7 +194,7 @@ sealed abstract class Lens private () {
       override def focusDataType: DataType = nextLens.focusDataType
 
       /**
-        * Renames the column of focused element.
+        * Renames the column of the focused element.
         *
         * @param newName the new name of the column.
         * @param prev    the vector with the strings of the columns that prefix this lens.
