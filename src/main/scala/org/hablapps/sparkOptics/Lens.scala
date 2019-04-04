@@ -51,7 +51,7 @@ object Lens {
       /**
         * Schema of the context element.
         *
-        * @return an spark [[StructType]]
+        * @return a spark [[StructType]]
         */
       override def schema: StructType = s
 
@@ -125,14 +125,14 @@ sealed abstract class Lens private () {
   /**
     * Schema of the context element.
     *
-    * @return an spark [[StructType]]
+    * @return a spark [[StructType]]
     */
   def schema: StructType
 
   /**
     * Schema of the structure that holds the focused element.
     *
-    * @return an spark [[StructType]]
+    * @return a spark [[StructType]]
     */
   def innerSchema: StructType
 
@@ -146,7 +146,7 @@ sealed abstract class Lens private () {
   /**
     * The column reference that is focusing.
     *
-    * @return an spark [[Column]] reference.
+    * @return a spark [[Column]] reference.
     */
   def get: Column = col(column.mkString("."))
 
@@ -175,14 +175,14 @@ sealed abstract class Lens private () {
       /**
         * Schema of the context element.
         *
-        * @return an spark [[StructType]]
+        * @return a spark [[StructType]]
         */
       override def schema: StructType = first.schema
 
       /**
         * Schema of the focused element
         *
-        * @return an spark [[StructType]]
+        * @return a spark [[StructType]]
         */
       override def innerSchema: StructType = nextLens.schema
 
