@@ -9,7 +9,7 @@ object Lens {
 
   /**
     * Creates a Lens that focus in the column. The column reference can be provided with dot notation,
-    * like in spark "column.subcolum".
+    * like in spark "column.subcolumn".
     *
     * @param column name of the column to focus
     * @param s      the StructType of the column
