@@ -9,7 +9,7 @@ object Lens {
 
   /**
     * Creates a Lens that focus in the column. The column reference can be provided with dot notation,
-    * like in spark "column.subcolum".
+    * like in spark "column.subcolumn".
     *
     * @param column name of the column to focus
     * @param s      the StructType of the column
@@ -44,14 +44,14 @@ object Lens {
 
     assert(
       s.fields.map(_.name).indexOf(c) >= 0,
-      s"the column $c not found in ${s.fields.map(_.name).mkString("[", ",", "]")}")
+      s"the column $c cannot be found in ${s.fields.map(_.name).mkString("[", ",", "]")}")
     new Lens() {
       override def column: Vector[String] = Vector(c)
 
       /**
         * Schema of the context element.
         *
-        * @return an spark [[StructType]]
+        * @return a spark [[StructType]]
         */
       override def schema: StructType = s
 
@@ -125,14 +125,14 @@ sealed abstract class Lens private () {
   /**
     * Schema of the context element.
     *
-    * @return an spark [[StructType]]
+    * @return a spark [[StructType]]
     */
   def schema: StructType
 
   /**
     * Schema of the structure that holds the focused element.
     *
-    * @return an spark [[StructType]]
+    * @return a spark [[StructType]]
     */
   def innerSchema: StructType
 
@@ -144,9 +144,9 @@ sealed abstract class Lens private () {
   def focusDataType: DataType
 
   /**
-    * The column reference that is focusing.
+    * The column reference that is in focus.
     *
-    * @return an spark [[Column]] reference.
+    * @return a spark [[Column]] reference.
     */
   def get: Column = col(column.mkString("."))
 
@@ -175,14 +175,14 @@ sealed abstract class Lens private () {
       /**
         * Schema of the context element.
         *
-        * @return an spark [[StructType]]
+        * @return a spark [[StructType]]
         */
       override def schema: StructType = first.schema
 
       /**
         * Schema of the focused element
         *
-        * @return an spark [[StructType]]
+        * @return a spark [[StructType]]
         */
       override def innerSchema: StructType = nextLens.schema
 
@@ -194,7 +194,7 @@ sealed abstract class Lens private () {
       override def focusDataType: DataType = nextLens.focusDataType
 
       /**
-        * Renames the column of focused element.
+        * Renames the column of the focused element.
         *
         * @param newName the new name of the column.
         * @param prev    the vector with the strings of the columns that prefix this lens.
