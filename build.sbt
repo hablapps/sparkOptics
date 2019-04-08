@@ -14,7 +14,7 @@ javaOptions ++= Seq("-Xms512M",
 libraryDependencies ++= {
   val sparkVersion = "2.3.1"
   Seq(
-    "org.apache.spark" %% "spark-sql" % sparkVersion,
+    "org.apache.spark" %% "spark-sql" % sparkVersion % "provided",
     "org.scalatest" %% "scalatest" % "3.0.5" % "test",
     "com.holdenkarau" %% "spark-testing-base" % s"${sparkVersion}_0.10.0" % "test",
     "org.apache.spark" %% "spark-hive" % sparkVersion % "test"

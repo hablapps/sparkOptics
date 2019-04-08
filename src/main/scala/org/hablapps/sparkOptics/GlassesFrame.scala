@@ -1,5 +1,6 @@
 package org.hablapps.sparkOptics
 
+import org.apache.spark.sql.types.StructField
 import org.apache.spark.sql.{Column, DataFrame}
 import org.hablapps.sparkOptics.ProtoLens.ProtoLens
 
@@ -64,6 +65,38 @@ object GlassesFrame {
 
 trait GlassesFrame[A] {
 
+  private def modifiedFieldIsEqualType(df1: DataFrame,
+                                       df2: DataFrame,
+                                       optic: A): Either[String, Unit] = {
+    compareFields(df1.select(get(optic)(df1)).schema.fields.head,
+                  df2.select(get(optic)(df2)).schema.fields.head)
+  }
+
+  private def compareFields(a: StructField,
+                            b: StructField): Either[String, Unit] =
+    for {
+      _ <- Either
+        .cond(a.name == b.name,
+              (),
+              s"The original name that was ${a.name} changed to ${b.name}")
+        .right
+      _ <- Either
+        .cond(
+          a.dataType.getClass.getCanonicalName == b.dataType.getClass.getCanonicalName,
+          (),
+          s"The original column type that was ${a.dataType.getClass.getSimpleName
+            .filter(_ != '$')} " +
+            s"changed to ${b.dataType.getClass.getSimpleName.filter(_ != '$')}"
+        )
+        .right
+      _ <- Either
+        .cond(
+          a.nullable == b.nullable,
+          (),
+          s"The original column nullable that was ${a.nullable} changed to ${b.nullable}")
+        .right
+    } yield ()
+
   def set(optic: A)(newValue: Column): DataFrame => DataFrame
 
   def get(optic: A): DataFrame => Column
@@ -73,11 +106,11 @@ trait GlassesFrame[A] {
   def setAndCheckSchema(optic: A)(newValue: Column): DataFrame => DataFrame =
     df => {
       val newDf = set(optic)(newValue)(df)
-      if (df.schema == newDf.schema) {
+      val validation = modifiedFieldIsEqualType(df, newDf, optic)
+      if (validation.isRight) {
         newDf
       } else {
-        throw new Exception(
-          "The returned schema is not the same as the original one")
+        throw new Exception(validation.left.get)
       }
     }
 
@@ -85,11 +118,11 @@ trait GlassesFrame[A] {
       f: Column => Column): DataFrame => DataFrame =
     df => {
       val newDf = modify(optic)(f)(df)
-      if (df.schema == newDf.schema) {
+      val validation = modifiedFieldIsEqualType(df, newDf, optic)
+      if (validation.isRight) {
         newDf
       } else {
-        throw new Exception(
-          "The returned schema is not the same as the original one")
+        throw new Exception(validation.left.get)
       }
     }
 

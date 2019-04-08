@@ -1,6 +1,5 @@
 package org.hablapps.sparkOptics
 
-import com.holdenkarau.spark.testing.SharedSparkContext
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._
 import org.scalatest.{FlatSpecLike, Matchers}
@@ -8,8 +7,7 @@ import org.scalatest.{FlatSpecLike, Matchers}
 class LensTest
   extends FlatSpecLike
     with LensLaws
-    with Matchers
-    with SharedSparkContext {
+    with Matchers {
 
   import spark.implicits._
 
