@@ -1,7 +1,6 @@
 package org.hablapps.sparkOptics
 
 import com.holdenkarau.spark.testing.DataFrameSuiteBase
-import org.hablapps.sparkOptics.ProtoLens.ProtoLens
 import org.scalatest.{FlatSpecLike, Matchers}
 import org.apache.spark.sql.functions.{concat, length => columnLength, lit}
 
