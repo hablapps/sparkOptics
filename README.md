@@ -66,12 +66,13 @@ This work can be simplified using spark-optics, that allow you to focus in the e
 and the optics will recreate the structure for you.
 
 ```scala
-val flashLens = Lens("company.address.street.name")(df.schema)
-val modifiedDF = df.select(flashLens.modify(upper):_*)
+val streetNameLens = Lens("company.address.street.name")(df.schema)
+val modifiedDF = df.select(streetNameLens.modify(upper):_*)
 modifiedDF.printSchema
-modifiedDF.as[Employee].head`
-
-`root
+modifiedDF.as[Employee].head
+```
+```
+root
 |-- name: string (nullable = true)
 |-- company: struct (nullable = false)
 |    |-- name: string (nullable = true)
@@ -80,9 +81,8 @@ modifiedDF.as[Employee].head`
 |    |    |-- street: struct (nullable = false)
 |    |    |    |-- number: integer (nullable = true)
 |    |    |    |-- name: string (nullable = true)
-```
-```scala
-flashLens: Lens = Lens(company.address.street.name)
+
+streetNameLens: Lens = Lens(company.address.street.name)
 modifiedDF: DataFrame = [name: string, company: struct<name: string, address: struct<city: string, street: struct<number: int, name: string>>>]
 res19_3: Employee = Employee(
 "john",
