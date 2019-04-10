@@ -12,7 +12,10 @@ If we have this structure in a dataframe
 case class Street(number: Int, name: String)
 case class Address(city: String, street: Street)
 case class Company(name: String, address: Address)
-case class Employee(name: String, company: Company)
+case class Employee(name: String, company: Company
+
+val employee = Employee("john", Company("awesome inc", Address("london", Street(23, "high street"))))
+val df = List(employee).toDS.toDF
 ```
 ```
 root
