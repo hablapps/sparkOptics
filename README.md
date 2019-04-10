@@ -8,12 +8,14 @@ what can be hard to manage.
 
 If we have this structure in a dataframe
 
-`case class Street(number: Int, name: String)
+```
+case class Street(number: Int, name: String)
 case class Address(city: String, street: Street)
 case class Company(name: String, address: Address)
-case class Employee(name: String, company: Company)`
-
-`root
+case class Employee(name: String, company: Company)
+```
+```
+root
  |-- name: string (nullable = true)
  |-- company: struct (nullable = true)
  |    |-- name: string (nullable = true)
@@ -21,11 +23,13 @@ case class Employee(name: String, company: Company)`
  |    |    |-- city: string (nullable = true)
  |    |    |-- street: struct (nullable = true)
  |    |    |    |-- number: integer (nullable = false)
- |    |    |    |-- name: string (nullable = true)`
+ |    |    |    |-- name: string (nullable = true)
+ ```
  
 To modify a inner element is hard to do, like changing the name of the street.
 
-`val mDF = df.select(df("name"),struct(
+```
+val mDF = df.select(df("name"),struct(
    df("company.name").as("name"),
    struct(
      df("company.address.city").as("city"),
@@ -35,11 +39,11 @@ To modify a inner element is hard to do, like changing the name of the street.
      ).as("street")
    ).as("address")
  ).as("company"))
- mDF.printSchema
- val longCodeEmployee = mDF.as[Employee].head
- longCodeEmployee == modifiedDF.as[Employee].head`
- 
-`root
+mDF.printSchema
+val longCodeEmployee = mDF.as[Employee].head
+```
+```
+root
   |-- name: string (nullable = true)
   |-- company: struct (nullable = false)
   |    |-- name: string (nullable = true)
@@ -49,34 +53,36 @@ To modify a inner element is hard to do, like changing the name of the street.
   |    |    |    |-- number: integer (nullable = true)
   |    |    |    |-- name: string (nullable = true)
  
- mDF: DataFrame = [name: string, company: struct<name: string, address: struct<city: string, street: struct<number: int, name: string>>>]
- longCodeEmployee: Employee = Employee(
-   "john",
-   Company("awesome inc", Address("london", Street(23, "HIGH STREET")))
- )
- res20_3: Boolean = true`
+mDF: DataFrame = [name: string, company: struct<name: string, address: struct<city: string, street: struct<number: int, name: string>>>]
+longCodeEmployee: Employee = Employee(
+"john",
+Company("awesome inc", Address("london", Street(23, "HIGH STREET"))))
+```
  
 This work can be simplified using spark-optics, that allow you to focus in the element that you want to modify,
 and the optics will recreate the structure for you.
 
-`val flashLens = Lens("company.address.street.name")(df.schema)
- val modifiedDF = df.select(flashLens.modify(upper):_*)
- modifiedDF.printSchema
- modifiedDF.as[Employee].head`
- 
+```
+val flashLens = Lens("company.address.street.name")(df.schema)
+val modifiedDF = df.select(flashLens.modify(upper):_*)
+modifiedDF.printSchema
+modifiedDF.as[Employee].head`
+
 `root
-  |-- name: string (nullable = true)
-  |-- company: struct (nullable = false)
-  |    |-- name: string (nullable = true)
-  |    |-- address: struct (nullable = false)
-  |    |    |-- city: string (nullable = true)
-  |    |    |-- street: struct (nullable = false)
-  |    |    |    |-- number: integer (nullable = true)
-  |    |    |    |-- name: string (nullable = true)
- 
- flashLens: Lens = Lens(company.address.street.name)
- modifiedDF: DataFrame = [name: string, company: struct<name: string, address: struct<city: string, street: struct<number: int, name: string>>>]
- res19_3: Employee = Employee(
-   "john",
-   Company("awesome inc", Address("london", Street(23, "HIGH STREET")))
- )`
+|-- name: string (nullable = true)
+|-- company: struct (nullable = false)
+|    |-- name: string (nullable = true)
+|    |-- address: struct (nullable = false)
+|    |    |-- city: string (nullable = true)
+|    |    |-- street: struct (nullable = false)
+|    |    |    |-- number: integer (nullable = true)
+|    |    |    |-- name: string (nullable = true)
+```
+``` 
+flashLens: Lens = Lens(company.address.street.name)
+modifiedDF: DataFrame = [name: string, company: struct<name: string, address: struct<city: string, street: struct<number: int, name: string>>>]
+res19_3: Employee = Employee(
+"john",
+Company("awesome inc", Address("london", Street(23, "HIGH STREET")))
+)
+```
