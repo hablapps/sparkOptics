@@ -8,7 +8,7 @@ what can be hard to manage.
 
 If we have this structure in a dataframe
 
-```
+```scala
 case class Street(number: Int, name: String)
 case class Address(city: String, street: Street)
 case class Company(name: String, address: Address)
@@ -28,7 +28,7 @@ root
  
 To modify a inner element is hard to do, like changing the name of the street.
 
-```
+```scala
 val mDF = df.select(df("name"),struct(
    df("company.name").as("name"),
    struct(
@@ -62,7 +62,7 @@ Company("awesome inc", Address("london", Street(23, "HIGH STREET"))))
 This work can be simplified using spark-optics, that allow you to focus in the element that you want to modify,
 and the optics will recreate the structure for you.
 
-```
+```scala
 val flashLens = Lens("company.address.street.name")(df.schema)
 val modifiedDF = df.select(flashLens.modify(upper):_*)
 modifiedDF.printSchema
@@ -78,7 +78,7 @@ modifiedDF.as[Employee].head`
 |    |    |    |-- number: integer (nullable = true)
 |    |    |    |-- name: string (nullable = true)
 ```
-``` 
+```scala
 flashLens: Lens = Lens(company.address.street.name)
 modifiedDF: DataFrame = [name: string, company: struct<name: string, address: struct<city: string, street: struct<number: int, name: string>>>]
 res19_3: Employee = Employee(
