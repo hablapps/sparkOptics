@@ -19,7 +19,7 @@ import org.hablapps.sparkOptics._
 df.select(Lens("field.subfield")(df.schema).set(lit(13)):_*)
 ```
 
-Want to try it right now, click on the binder icon to lunch a interactive note book.
+Want to try it right now, click on the binder icon to lunch a interactive notebook.
 
 ### Installing
 
