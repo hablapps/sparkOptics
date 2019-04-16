@@ -2,7 +2,8 @@
 ![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/oss.sonatype.org/org.hablapps/spark-optics_2.11.svg)
 [![Gitter](https://badges.gitter.im/hablapps/sparkOptics.svg)](https://gitter.im/hablapps/sparkOptics?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/hablapps/sparkOptics/v1.0.0?filepath=%2Fnotebooks%2FSparkLenses.ipynb)
-#Spark-optics
+
+# Spark-optics
 Modify your complex structures in spark-sql dataframes with optics.
 
 ## Getting Started
@@ -27,6 +28,8 @@ Compiled for scala 2.11 only, at the moment. Tested with spark 2.3 and 2.4
 ```sbtshell
 libraryDependencies += "org.hablapps" %% "spark-optics" % "1.0.0"
 ```
+
+Spark lens doesn't have any dependencies.
 
 ### Implemented optics
 
