@@ -23,7 +23,7 @@ Want to try it right now, click on the binder icon to lunch a interactive notebo
 
 ### Installing
 
-Compiled for scala 2.11 only, at the moment. Tested with spark 2.3 and 2.4
+Compiled for scala 2.11 only. Tested with spark 2.3 and 2.4
 
 ```sbtshell
 libraryDependencies += "org.hablapps" %% "spark-optics" % "1.0.0"
@@ -36,7 +36,7 @@ Spark lens doesn't have any dependencies.
 #### Lens
 Optic to focus in an element of a provided structure. It has columns that must be in the schema.
 
-#### Protolens
+#### Protolens
 Optic equivalent to a lens, but it doesn't have yet a schema, so it can be applied to any dataframe that contains the focused columns.
 
 ### Motivation and larger example
@@ -50,7 +50,7 @@ If we have this structure in a dataframe
 case class Street(number: Int, name: String)
 case class Address(city: String, street: Street)
 case class Company(name: String, address: Address)
-case class Employee(name: String, company: Company
+case class Employee(name: String, company: Company)
 
 val employee = Employee("john", Company("awesome inc", Address("london", Street(23, "high street"))))
 val df = List(employee).toDS.toDF
@@ -67,7 +67,7 @@ root
  |    |    |    |-- name: string (nullable = true)
  ```
  
-To modify a inner element is hard to do, like changing the name of the street.
+To modify an inner element is hard to do, like changing the name of the street.
 
 ```scala
 val mDF = df.select(df("name"),struct(
@@ -100,7 +100,7 @@ longCodeEmployee: Employee = Employee(
 Company("awesome inc", Address("london", Street(23, "HIGH STREET"))))
 ```
  
-This work can be simplified using spark-optics, that allow you to focus in the element that you want to modify,
+This work can be simplified by using spark-optics, that allow you to focus in the element that you want to modify,
 and the optics will recreate the structure for you.
 
 ```scala

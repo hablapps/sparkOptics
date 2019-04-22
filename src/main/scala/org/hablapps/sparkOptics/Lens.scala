@@ -51,7 +51,8 @@ object Lens {
       /**
         * Schema of the context element.
         *
-        * @return a spark [[StructType]]
+        * @return a spark org.apache.spark.sql.types.StructType
+        * @see [[https://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.sql.types.StructType org.apache.spark.sql.types.StructType]]
         */
       override def schema: StructType = s
 
@@ -63,6 +64,7 @@ object Lens {
         * @param newValue the new value to set.
         * @param prev     the vector with the strings of the columns that prefix this lens.
         * @return the array of columns with the modifications.
+        * @see [[https://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.sql.Column org.apache.spark.sql.Column]]
         */
       def setAux(newValue: Column, prev: Vector[String]): Array[Column] = {
         s.fields
@@ -80,6 +82,7 @@ object Lens {
         * @param newName the new name of the column.
         * @param prev    the vector with the strings of the columns that prefix this lens.
         * @return an array of columns with the modifications.
+        * @see [[https://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.sql.Column org.apache.spark.sql.Column]]
         */
       override def renameWithPrefix(newName: String,
                                     prev: Vector[String]): Array[Column] =
@@ -96,6 +99,7 @@ object Lens {
         *
         * @param prev the vector with the strings of the columns that prefix this lens.
         * @return an array of columns with the modifications.
+        * @see [[https://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.sql.Column org.apache.spark.sql.Column]]
         */
       override def prune(prev: Vector[String]): Array[Column] =
         s.fields
@@ -103,9 +107,9 @@ object Lens {
           .map(co => col((prev :+ co.name).mkString(".")).as(co.name))
 
       /**
-        * The [[DataType]] of the focused element
+        * The [[org.apache.spark.sql.types.DataType]] of the focused element
         *
-        * @return a [[DataType]] value
+        * @return a [[org.apache.spark.sql.types.DataType]] value
         */
       override def focusDataType: DataType =
         schema.fields.find(_.name == c).get.dataType
@@ -125,28 +129,33 @@ sealed abstract class Lens private () {
   /**
     * Schema of the context element.
     *
-    * @return a spark [[StructType]]
+    * @return a spark StructType
+    * @see [[https://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.sql.types.StructType org.apache.spark.sql.types.StructType]]
     */
   def schema: StructType
 
   /**
     * Schema of the structure that holds the focused element.
     *
-    * @return a spark [[StructType]]
+    * @return a spark StructType
+    * @see [[https://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.sql.types.StructType org.apache.spark.sql.types.StructType]]
     */
   def innerSchema: StructType
 
   /**
-    * The [[DataType]] of the focused element
+    * The spark sql type of the focused element
     *
-    * @return a [[DataType]] value
+    * @return a spark DataType value
+    * @see [[https://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.sql.types.DataType org.apache.spark.sql.types.DataType]]
     */
   def focusDataType: DataType
 
   /**
     * The column reference that is in focus.
     *
-    * @return a spark [[Column]] reference.
+    * @return a spark Column
+    * @see [[https://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.sql.Column org.apache.spark.sql.Column]]
+    *
     */
   def get: Column = col(column.mkString("."))
 
@@ -175,21 +184,21 @@ sealed abstract class Lens private () {
       /**
         * Schema of the context element.
         *
-        * @return a spark [[StructType]]
+        * @return a spark [[org.apache.spark.sql.types.StructType]]
         */
       override def schema: StructType = first.schema
 
       /**
         * Schema of the focused element
         *
-        * @return a spark [[StructType]]
+        * @return a spark [[org.apache.spark.sql.types.StructType]]
         */
       override def innerSchema: StructType = nextLens.schema
 
       /**
-        * The [[DataType]] of the focused element
+        * The [[org.apache.spark.sql.types.DataType]] of the focused element
         *
-        * @return a [[DataType]] value
+        * @return a [[org.apache.spark.sql.types.DataType]] value
         */
       override def focusDataType: DataType = nextLens.focusDataType
 
