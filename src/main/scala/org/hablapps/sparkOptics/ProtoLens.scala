@@ -14,5 +14,7 @@ object ProtoLens {
         p1(schema) composeProtoLens p2
       }
     }
+
+    type ProtoLens = StructType => Lens
   }
 }
