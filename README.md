@@ -29,22 +29,19 @@ Compiled for scala 2.11 only. Tested with spark 2.3 and 2.4
 libraryDependencies += "org.hablapps" %% "spark-optics" % "1.0.0"
 ```
 
-Spark lens doesn't have any dependencies.
+Spark lens doesn't have any dependencies beyond Spark itself.
 
 ### Implemented optics
 
 #### Lens
-Optic to focus in an element of a provided structure. It has columns that must be in the schema.
+Optic to focus in a column of a provided schema.
 
 #### Protolens
-Optic equivalent to a lens, but it doesn't have yet a schema, so it can be applied to any dataframe that contains the focused columns.
+Optic equivalent to a lens, but without an specific schema, so that it can be applied to any dataframe that contains the specified column.
 
 ### Motivation and larger example
-Working with complex structures in spark sql's dataframes can be hard. 
-A common case if you are working with complex structures is to modify inner elements of the structure, 
-what can be hard to manage.
-
-If we have this structure in a dataframe
+Working with complex structures in Spark Sql's DataFrames can be hard. 
+A common case if you are working with complex structures is to modify the inner elements of the structure. For instance:
 
 ```scala
 case class Street(number: Int, name: String)
@@ -67,7 +64,7 @@ root
  |    |    |    |-- name: string (nullable = true)
  ```
  
-To modify an inner element is hard to do, like changing the name of the street.
+In order to modify an inner element, like changing the name of the street, we need to do something like this:
 
 ```scala
 val mDF = df.select(df("name"),struct(
@@ -100,7 +97,7 @@ longCodeEmployee: Employee = Employee(
 Company("awesome inc", Address("london", Street(23, "HIGH STREET"))))
 ```
  
-This work can be simplified by using spark-optics, that allow you to focus in the element that you want to modify,
+This can be simplified by using spark-optics. It allows you to focus in the element that you want to modify,
 and the optics will recreate the structure for you.
 
 ```scala
