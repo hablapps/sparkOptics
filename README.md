@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.com/hablapps/sparkOptics.svg?token=pvJZNjJ8hxxoMyPVvQ8u&branch=master)](https://travis-ci.com/hablapps/sparkOptics)
 ![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/oss.sonatype.org/org.hablapps/spark-optics_2.11.svg)
 [![Gitter](https://badges.gitter.im/hablapps/sparkOptics.svg)](https://gitter.im/hablapps/sparkOptics?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/hablapps/sparkOptics/v1.0.0?filepath=%2Fnotebooks%2FSparkLenses.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/hablapps/sparkOptics/binder?filepath=%2Fnotebooks%2FSparkLenses.ipynb)
 
 # Spark-optics
 Modify your complex structures in spark-sql dataframes with optics.
