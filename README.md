@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.com/hablapps/sparkOptics.svg?token=pvJZNjJ8hxxoMyPVvQ8u&branch=master)](https://travis-ci.com/hablapps/sparkOptics)
-![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/oss.sonatype.org/org.hablapps/spark-optics_2.11.svg)
+[![Maven Central](https://img.shields.io/maven-central/v/org.hablapps/spark-optics_2.11.svg)](https://maven-badges.herokuapp.com/maven-central/org.hablapps/spark-optics_2.11)
 [![Gitter](https://badges.gitter.im/hablapps/sparkOptics.svg)](https://gitter.im/hablapps/sparkOptics?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/hablapps/sparkOptics/binder?filepath=%2Fnotebooks%2FSparkLenses.ipynb)
 
