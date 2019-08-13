@@ -1,8 +1,6 @@
 language: scala
 scala:
-  - 2.11.12
-  #- 2.12.8
-  # holden's library not yet for 2.12
+  - 2.12.9
 sudo: required
 dist: trusty
 group: edge
@@ -13,7 +11,7 @@ before_install:
 stages:
   - name: +test
   - name: release
-    if: (branch = master AND type = push) OR (tag IS present)
+    if: (branch = master AND type = push) OR (tag IS present and branch != binder)
 
 jobs:
   include:
