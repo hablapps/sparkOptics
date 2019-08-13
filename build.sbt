@@ -1,8 +1,8 @@
 name := "spark-optics"
 
-scalaVersion := "2.11.12"
+scalaVersion := "2.12.9"
 
-crossScalaVersions := Seq("2.11.12")//, "2.12.8")
+crossScalaVersions := Seq("2.11.12", "2.12.9")
 
 parallelExecution in Test := false
 fork in Test := true
@@ -12,11 +12,12 @@ javaOptions ++= Seq("-Xms512M",
   "-XX:+CMSClassUnloadingEnabled")
 
 libraryDependencies ++= {
-  val sparkVersion = "2.3.1"
+  val sparkVersion = "2.4.2"
+  val sparkTestVersion = "0.12.0"
   Seq(
     "org.apache.spark" %% "spark-sql" % sparkVersion % "provided",
     "org.scalatest" %% "scalatest" % "3.0.5" % "test",
-    "com.holdenkarau" %% "spark-testing-base" % s"${sparkVersion}_0.10.0" % "test",
+    "com.holdenkarau" %% "spark-testing-base" % s"${sparkVersion}_$sparkTestVersion" % "test",
     "org.apache.spark" %% "spark-hive" % sparkVersion % "test"
   )
 }
