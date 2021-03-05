@@ -67,3 +67,9 @@ fabric.properties
 
 # Editor-based Rest Client
 .idea/httpRequests
+
+.metals
+.vscode
+.bloop
+.bsp
+.idea

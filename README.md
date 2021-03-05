@@ -23,7 +23,7 @@ Want to try it right now, click on the binder icon to lunch a interactive notebo
 
 ### Installing
 
-Compiled for Scala 2.11 with Spark 2.3 and Scala 2.12 with Spark 2.4. Tested with spark 2.3 and 2.4
+Compiled for Scala 2.11 with Spark 2.3 and Scala 2.12 with Spark 2.4. Tested with spark 2.3, 2.4 in scala 2.11 and for 3.0.1 in scala 2.12.
 
 ```sbtshell
 libraryDependencies += "org.hablapps" %% "spark-optics" % "1.0.0"
